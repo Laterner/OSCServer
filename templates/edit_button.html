@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="mb-4">
+        {% if button %}Редактирование сценария{% else %}Добавление нового сценария{% endif %}
+    </h1>
+    
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Название сценария</label>
+            <input type="text" class="form-control" name="name" 
+                   value="{{ button.name if button }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Цвет кнопки</label>
+            <select class="form-select" name="color">
+                <option value="btn-primary" {% if button and button.color == 'btn-primary' %}selected{% endif %}>Синий</option>
+                <option value="btn-success" {% if button and button.color == 'btn-success' %}selected{% endif %}>Зеленый</option>
+                <option value="btn-danger" {% if button and button.color == 'btn-danger' %}selected{% endif %}>Красный</option>
+                <option value="btn-warning" {% if button and button.color == 'btn-warning' %}selected{% endif %}>Желтый</option>
+                <option value="btn-info" {% if button and button.color == 'btn-info' %}selected{% endif %}>Голубой</option>
+                <option value="btn-dark" {% if button and button.color == 'btn-dark' %}selected{% endif %}>Темный</option>
+            </select>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Порядок сортирыовки</label>
+            <input type="number" class="form-control" name="order" 
+                   value="{{ button.order if button else 0 }}">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">
+            {% if button %}Обновить{% else %}Добавить{% endif %} кнопку
+        </button>
+        <a href="{{ url_for('button_admin') }}" class="btn btn-secondary">Отмена</a>
+    </form>
+    <script>
+        function sendButton(buttonId) {
+            if (!confirm('Подтвердить отправку')) {
+                return;
+            }
+            
+            fetch(`/send_button/${buttonId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при отправке команд');
+            });
+        }
+    </script>
+{% endblock %}

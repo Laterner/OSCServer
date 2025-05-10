@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="mb-4">
+        {% if command %}Редактирование команды{% else %}Добавление новой команды{% endif %}
+        <span class="btn {{ button.color }}">
+            {{ button.name }}
+        </span>
+    </h1>
+    
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">OSC адрес (например /test)</label>
+            <input type="text" class="form-control" name="osc_address" 
+                   value="{{ command.osc_address if command }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">OSC аргументы (через пробел)</label>
+            <input type="text" class="form-control" name="osc_arguments" 
+                   value="{{ command.osc_arguments if command }}">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">IP адрес OSC сервера</label>
+            <input type="text" class="form-control" name="osc_ip" 
+                   value="{{ command.osc_ip if command else '127.0.0.1' }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Порт OSC сервера</label>
+            <input type="number" class="form-control" name="osc_port" 
+                   value="{{ command.osc_port if command else 9000 }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Порядок выполнения</label>
+            <input type="number" class="form-control" name="order" 
+                   value="{{ command.order if command else 0 }}">
+            <div class="form-text">Команды выполняются в порядке возрастания этого числа</div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">
+            {% if command %}Обновить{% else %}Добавить{% endif %} команду
+        </button>
+        <a href="{{ url_for('command_admin', button_id=button.id) }}" class="btn btn-secondary">Отмена</a>
+    </form>
+{% endblock %}

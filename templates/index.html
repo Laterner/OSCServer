@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="mb-4">Выбор сценария</h1>
+    
+    <div class="row">
+        {% for button in buttons %}
+            <div class="col-md-4 mb-3">
+                <button class="btn {{ button.color }} w-100 py-3 position-relative"
+                        onclick="sendButton({{ button.id }})">
+                    {{ button.name }}
+                    <span class="position-absolute top-0 end-0 badge bg-secondary">
+                        {{ button.commands|length }}
+                    </span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div class="mt-4"> {% comment %}  url_for('button_admin', admin='secret') {% endcomment %}
+        <a href="http://10.10.10.111:7890/" class="btn btn-outline-secondary">
+            Назад 
+        </a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function sendButton(buttonId) {
+    if (!confirm('Подтвердить отправку')) {
+        return;
+    }
+    
+    fetch(`/send_button/${buttonId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+        } else {
+            alert('Ошибка: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ошибка при отправке команд');
+    });
+}
+</script>
+{% endblock %}
