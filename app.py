@@ -23,7 +23,6 @@ class Command(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     button_id = db.Column(db.Integer, db.ForeignKey('button.id'), nullable=False)
     osc_address = db.Column(db.String(200), nullable=False)
-    osc_type = db.Column(db.String(16))
     osc_arguments = db.Column(db.String(500))
     osc_ip = db.Column(db.String(50), default='127.0.0.1')
     osc_port = db.Column(db.Integer, default=9000)
@@ -175,4 +174,4 @@ def delete_command(command_id):
     return redirect(url_for('command_admin', button_id=button_id))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
